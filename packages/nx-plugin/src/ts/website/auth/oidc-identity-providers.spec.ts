@@ -141,6 +141,30 @@ export function Main() {
       key.startsWith('UserIdentityOidcIdentityProvidersIdpRedirectUri'),
     )?.[1] as any;
 
+  it('should give each stage in one account and region its own valid domain', () => {
+    const ACCOUNT = '111111111111';
+    const app = new cdk.App({ outdir });
+    const stages = ['sandbox', 'beta'].map((stageId) => {
+      const stage = new cdk.Stage(app, stageId, {
+        env: { account: ACCOUNT, region: 'ap-southeast-2' },
+      });
+      const stack = new cdk.Stack(stage, 'Application');
+      const identity = new UserIdentity(stack, 'Identity');
+      const [[, domain]] = resourcesOfType(
+        Template.fromStack(stack),
+        'AWS::Cognito::UserPoolDomain',
+      );
+      return { domain: domain.Properties.Domain, addr: identity.node.addr };
+    });
+
+    expect(new Set(stages.map(({ domain }) => domain)).size).toBe(2);
+    for (const { domain, addr } of stages) {
+      expect(domain).toMatch(/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/);
+      expect(domain.length).toBeLessThanOrEqual(63);
+      expect(domain).toBe(`test-${ACCOUNT}-${addr.slice(-8)}`);
+    }
+  });
+
   describe('with identity providers', () => {
     let template: any;
 

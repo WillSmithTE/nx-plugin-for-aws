@@ -50,6 +50,7 @@ import {
   addNoneAuthMenu,
   addShadcnAuthMenu,
   deriveCognitoDomainPrefix,
+  validateCognitoDomainPrefix,
 } from './utils.js';
 
 const readGritPattern = (name: string): string =>
@@ -86,6 +87,7 @@ export async function tsReactWebsiteAuthGenerator(
     options.cognitoDomain && options.cognitoDomain.length > 0
       ? options.cognitoDomain
       : deriveCognitoDomainPrefix(getNpmScope(tree), projectConfig.name!);
+  validateCognitoDomainPrefix(cognitoDomain);
 
   await runtimeConfigGenerator(tree, {
     project: options.project,

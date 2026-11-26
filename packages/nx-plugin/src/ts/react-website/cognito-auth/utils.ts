@@ -14,7 +14,7 @@ const readGritPattern = (name: string): string =>
     'utf-8',
   ).trim();
 
-// Leaves room for the IaC suffix (Terraform: `-<12-digit account>-<8-char hex>` = 22 chars) inside Cognito's 63-char limit.
+// Leaves room for the IaC suffix (CDK and Terraform: `-<12-digit account>-<8-char hex>` = 22 chars) inside Cognito's 63-char limit.
 const MAX_DERIVED_DOMAIN_PREFIX_LENGTH = 41;
 
 // Cognito rejects domains containing these substrings ("Domain cannot contain reserved word").
@@ -45,6 +45,14 @@ export const deriveCognitoDomainPrefix = (
     );
   }
   return candidate;
+};
+
+export const validateCognitoDomainPrefix = (cognitoDomain: string): void => {
+  if (cognitoDomain.length > MAX_DERIVED_DOMAIN_PREFIX_LENGTH) {
+    throw new Error(
+      `cognitoDomain "${cognitoDomain}" is ${cognitoDomain.length} characters, but must be at most ${MAX_DERIVED_DOMAIN_PREFIX_LENGTH} characters to fit Cognito's 63-character domain limit with the suffix the infrastructure adds.`,
+    );
+  }
 };
 
 // Adds a user greeting and sign-out button to the default AppLayout header when using the None UX provider.

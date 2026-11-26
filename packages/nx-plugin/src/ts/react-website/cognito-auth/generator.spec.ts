@@ -595,6 +595,15 @@ describe('cognito-auth generator', () => {
     expect(userIdentity).toContain('proj-test-project');
   });
 
+  it('should reject a cognito domain longer than 41 characters', async () => {
+    await expect(
+      tsReactWebsiteAuthGenerator(tree, {
+        ...options,
+        cognitoDomain: 'a'.repeat(42),
+      }),
+    ).rejects.toThrow('must be at most 41 characters');
+  });
+
   it('should add generator metric to app.ts', async () => {
     // Set up test tree with shared constructs
     await sharedConstructsGenerator(

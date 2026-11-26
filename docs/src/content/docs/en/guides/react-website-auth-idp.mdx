@@ -261,10 +261,10 @@ Follow these steps in this order. The generator also prints them when it finishe
 
 <Infrastructure>
   <Fragment slot="cdk">
-The stack that contains `UserIdentity` has an output whose key starts with `<id>OidcIdentityProvidersIdpRedirectUri`, where `<id>` is the construct ID you gave `UserIdentity`, for example `IdentityOidcIdentityProvidersIdpRedirectUri`. You can also work it out before you deploy, from the `cognitoDomain` you chose for `ts#website#auth`, your AWS account ID and your region:
+The stack that contains `UserIdentity` has an output whose key starts with `<id>OidcIdentityProvidersIdpRedirectUri`, where `<id>` is the construct ID you gave `UserIdentity`, for example `IdentityOidcIdentityProvidersIdpRedirectUri`. You can also work it out before you deploy, from the `cognitoDomain` you chose for `ts#website#auth`, your AWS account ID, your region and the 8-character suffix on the `AWS::Cognito::UserPoolDomain` `Domain` in your `cdk synth` output:
 
 ```
-https://<cognitoDomain>-<account>.auth.<region>.amazoncognito.com/oauth2/idpresponse
+https://<cognitoDomain>-<account>-<suffix>.auth.<region>.amazoncognito.com/oauth2/idpresponse
 ```
   </Fragment>
   <Fragment slot="terraform">

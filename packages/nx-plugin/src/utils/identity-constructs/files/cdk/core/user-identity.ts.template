@@ -315,7 +315,7 @@ export class UserIdentity extends Construct {
     new UserPoolDomain(this, 'UserPoolDomain', {
       userPool,
       cognitoDomain: {
-        domainPrefix: `<%= cognitoDomain %>-${Stack.of(this).account}`,
+        domainPrefix: `<%= cognitoDomain %>-${Stack.of(this).account}-${this.node.addr.slice(-8)}`,
       },
       managedLoginVersion: ManagedLoginVersion.NEWER_MANAGED_LOGIN,
     });
